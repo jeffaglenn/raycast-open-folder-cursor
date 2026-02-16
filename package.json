@@ -1,0 +1,34 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "open-folder-cursor",
+  "title": "Open Folder in Cursor",
+  "description": "Quickly search and open a folder in Cursor",
+  "icon": "command-icon.png",
+  "author": "your-raycast-username",
+  "categories": ["Developer Tools"],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "index",
+      "title": "Open Folder in Cursor",
+      "description": "Search and open a folder in Cursor",
+      "mode": "view",
+      "keywords": ["c", "cursor", "folder"]
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.83.2"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.8",
+    "@types/node": "20.8.10",
+    "@types/react": "19.0.10",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "lint": "ray lint"
+  }
+}
