@@ -1,4 +1,4 @@
-import { ActionPanel, List, Action, showToast, Toast, Icon, popToRoot } from "@raycast/api";
+import { ActionPanel, List, Action, showToast, Toast, Icon, popToRoot, useNavigation } from "@raycast/api";
 import { exec } from "child_process";
 import { readdirSync } from "fs";
 import { homedir } from "os";
@@ -11,23 +11,40 @@ interface Folder {
   path: string;
 }
 
-export default function Command() {
+function getSubfolders(parentPath: string): Folder[] {
+  return readdirSync(parentPath, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .filter((dirent) => !dirent.name.startsWith("."))
+    .map((dirent) => ({
+      name: dirent.name,
+      path: `${parentPath}/${dirent.name}`,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function openInCursor(folderPath: string) {
+  exec(`cursor "${folderPath}"`, async (error) => {
+    if (error) {
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to open folder",
+        message: error.message,
+      });
+      return;
+    }
+  });
+  popToRoot();
+}
+
+function FolderList({ parentPath, title, isRoot = true }: { parentPath: string; title?: string; isRoot?: boolean }) {
+  const { push, pop } = useNavigation();
   const [searchText, setSearchText] = useState("");
   const [folders, setFolders] = useState<Folder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
-      const allFolders = readdirSync(BASE_FOLDER, { withFileTypes: true })
-        .filter((dirent) => dirent.isDirectory())
-        .filter((dirent) => !dirent.name.startsWith("."))
-        .map((dirent) => ({
-          name: dirent.name,
-          path: `${BASE_FOLDER}/${dirent.name}`,
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
-
-      setFolders(allFolders);
+      setFolders(getSubfolders(parentPath));
     } catch (error) {
       showToast({
         style: Toast.Style.Failure,
@@ -37,38 +54,25 @@ export default function Command() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [parentPath]);
 
   const filteredFolders = folders.filter((folder) =>
     folder.name.toLowerCase().includes(searchText.toLowerCase())
   );
-
-  function openInCursor(folder: Folder) {
-    exec(`cursor "${folder.path}"`, async (error) => {
-      if (error) {
-        await showToast({
-          style: Toast.Style.Failure,
-          title: "Failed to open folder",
-          message: error.message,
-        });
-        return;
-      }
-    });
-    popToRoot();
-  }
 
   return (
     <List
       isLoading={isLoading}
       searchBarPlaceholder="Search folders..."
       onSearchTextChange={setSearchText}
+      navigationTitle={title}
       throttle
     >
       {filteredFolders.length === 0 && !isLoading ? (
         <List.EmptyView
           icon={Icon.Folder}
           title="No folders found"
-          description={searchText ? `No matches for "${searchText}"` : "No folders in ~/Sites"}
+          description={searchText ? `No matches for "${searchText}"` : `No subfolders in ${parentPath}`}
         />
       ) : (
         filteredFolders.map((folder) => (
@@ -78,9 +82,23 @@ export default function Command() {
             icon={Icon.Folder}
             actions={
               <ActionPanel>
-                <Action title="Open in Cursor" onAction={() => openInCursor(folder)} icon={Icon.Code} />
+                <Action title="Open in Cursor" onAction={() => openInCursor(folder.path)} icon={Icon.Code} />
+                <Action
+                  title="Browse Subfolders"
+                  icon={Icon.ArrowRight}
+                  shortcut={{ modifiers: [], key: "arrowRight" }}
+                  onAction={() => push(<FolderList parentPath={folder.path} title={folder.name} isRoot={false} />)}
+                />
                 <Action.ShowInFinder path={folder.path} />
                 <Action.CopyToClipboard title="Copy Path" content={folder.path} />
+                {!isRoot && (
+                  <Action
+                    title="Go Back"
+                    icon={Icon.ArrowLeft}
+                    shortcut={{ modifiers: [], key: "arrowLeft" }}
+                    onAction={() => pop()}
+                  />
+                )}
               </ActionPanel>
             }
           />
@@ -88,4 +106,8 @@ export default function Command() {
       )}
     </List>
   );
+}
+
+export default function Command() {
+  return <FolderList parentPath={BASE_FOLDER} />;
 }
