@@ -4,7 +4,7 @@ import { readdirSync } from "fs";
 import { homedir } from "os";
 import { useState, useEffect } from "react";
 
-const BASE_FOLDER = `${homedir()}/Sites`;
+const BASE_FOLDER = `${homedir()}/Projects`;
 
 interface Folder {
   name: string;

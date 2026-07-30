@@ -1,6 +1,6 @@
 # Open Folder in Cursor
 
-A Raycast extension that lets you quickly search for a folder in `~/Sites` and open it in [Cursor](https://cursor.sh).
+A Raycast extension that lets you quickly search for a folder in `~/Projects` and open it in [Cursor](https://cursor.sh).
 
 ## Usage
 
@@ -19,7 +19,7 @@ A Raycast extension that lets you quickly search for a folder in `~/Sites` and o
 
 ## Configuration
 
-The extension searches folders inside `~/Sites`. To change this, update the `BASE_FOLDER` constant in `src/index.tsx`.
+The extension searches folders inside `~/Projects`. To change this, update the `BASE_FOLDER` constant in `src/index.tsx`.
 
 ## Prerequisites
 
