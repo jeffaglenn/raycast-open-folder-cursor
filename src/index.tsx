@@ -1,10 +1,18 @@
 import { ActionPanel, List, Action, showToast, Toast, Icon, popToRoot, useNavigation } from "@raycast/api";
 import { exec } from "child_process";
-import { readdirSync } from "fs";
+import { readdirSync, existsSync } from "fs";
 import { homedir } from "os";
 import { useState, useEffect } from "react";
 
 const BASE_FOLDER = `${homedir()}/Projects`;
+
+// Raycast doesn't inherit the login shell PATH, so look for the CLI directly
+// and fall back to launching the app when it isn't installed.
+const ZED_CLI = ["/usr/local/bin/zed", "/opt/homebrew/bin/zed", `${homedir()}/.local/bin/zed`].find(existsSync);
+
+function zedCommand(folderPath: string): string {
+  return ZED_CLI ? `"${ZED_CLI}" "${folderPath}"` : `open -a "Zed" "${folderPath}"`;
+}
 
 interface Folder {
   name: string;
@@ -22,8 +30,8 @@ function getSubfolders(parentPath: string): Folder[] {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function openInCursor(folderPath: string) {
-  exec(`cursor "${folderPath}"`, async (error) => {
+function openInZed(folderPath: string) {
+  exec(zedCommand(folderPath), async (error) => {
     if (error) {
       await showToast({
         style: Toast.Style.Failure,
@@ -82,7 +90,7 @@ function FolderList({ parentPath, title, isRoot = true }: { parentPath: string; 
             icon={Icon.Folder}
             actions={
               <ActionPanel>
-                <Action title="Open in Cursor" onAction={() => openInCursor(folder.path)} icon={Icon.Code} />
+                <Action title="Open in Zed" onAction={() => openInZed(folder.path)} icon={Icon.Code} />
                 <Action
                   title="Browse Subfolders"
                   icon={Icon.ArrowRight}

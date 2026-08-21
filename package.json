@@ -1,8 +1,8 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "open-folder-cursor",
-  "title": "Open Folder in Cursor",
-  "description": "Quickly search and open a folder in Cursor",
+  "name": "open-folder-zed",
+  "title": "Open Folder in Zed",
+  "description": "Quickly search and open a folder in Zed",
   "icon": "command-icon.png",
   "author": "your-raycast-username",
   "categories": ["Developer Tools"],
@@ -10,10 +10,10 @@
   "commands": [
     {
       "name": "index",
-      "title": "Open Folder in Cursor",
-      "description": "Search and open a folder in Cursor",
+      "title": "Open Folder in Zed",
+      "description": "Search and open a folder in Zed",
       "mode": "view",
-      "keywords": ["c", "cursor", "folder"]
+      "keywords": ["z", "zed", "folder"]
     }
   ],
   "dependencies": {

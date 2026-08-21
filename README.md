@@ -1,19 +1,19 @@
-# Open Folder in Cursor
+# Open Folder in Zed
 
-A Raycast extension that lets you quickly search for a folder in `~/Projects` and open it in [Cursor](https://cursor.sh).
+A Raycast extension that lets you quickly search for a folder in `~/Projects` and open it in [Zed](https://zed.dev).
 
 ## Usage
 
-1. Open Raycast and type `c` (or "Open Folder in Cursor")
+1. Open Raycast and type `z` (or "Open Folder in Zed")
 2. Press Enter to launch the command
 3. Start typing a folder name — results filter live as you type
-4. Press Enter on a folder to open it in Cursor
+4. Press Enter on a folder to open it in Zed
 
 ## Actions
 
 | Action              | Shortcut         |
 | ------------------- | ---------------- |
-| Open in Cursor      | `Enter`          |
+| Open in Zed         | `Enter`          |
 | Show in Finder      | `Cmd + Enter`    |
 | Copy Path           | `Cmd + Shift + C`|
 
@@ -24,7 +24,9 @@ The extension searches folders inside `~/Projects`. To change this, update the `
 ## Prerequisites
 
 - [Raycast](https://raycast.com)
-- [Cursor](https://cursor.sh) with the `cursor` CLI command available in your PATH
+- [Zed](https://zed.dev) — the extension uses the `zed` CLI if it's installed at
+  `/usr/local/bin/zed`, `/opt/homebrew/bin/zed`, or `~/.local/bin/zed`, and otherwise
+  falls back to `open -a "Zed"`. Install the CLI from Zed via **Zed → Install CLI**.
 
 ## Development
 
