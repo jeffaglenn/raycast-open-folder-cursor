@@ -81,6 +81,23 @@ function FolderList({ parentPath, title, isRoot = true }: { parentPath: string; 
           icon={Icon.Folder}
           title="No folders found"
           description={searchText ? `No matches for "${searchText}"` : `No subfolders in ${parentPath}`}
+          actions={
+            // Without this the list has no ActionPanel at all, leaving an empty
+            // subfolder with no way back out.
+            <ActionPanel>
+              {!isRoot && (
+                <Action
+                  title="Go Back"
+                  icon={Icon.ArrowLeft}
+                  shortcut={{ modifiers: [], key: "arrowLeft" }}
+                  onAction={() => pop()}
+                />
+              )}
+              <Action title="Open in Zed" onAction={() => openInZed(parentPath)} icon={Icon.Code} />
+              <Action.ShowInFinder path={parentPath} />
+              <Action.CopyToClipboard title="Copy Path" content={parentPath} />
+            </ActionPanel>
+          }
         />
       ) : (
         filteredFolders.map((folder) => (
